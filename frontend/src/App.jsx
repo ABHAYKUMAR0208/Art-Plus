@@ -44,7 +44,6 @@ import TermsAndConditions from './pages/footerdata-Usefulldata/Terms';
 import PaymentSecurity from "./pages/footerdata-Usefulldata/payment-security";
 import PrivacyPolicy from "./pages/footerdata-Usefulldata/PrivacyPolicy";
 import SiteMap from "./pages/footerdata-Usefulldata/sitemap";
-import ProductsOnSale from "./pages/footerdata-Usefulldata/OnSale";
 
 //Footer About links
 import WhoAreWe from "./pages/Footer-About/who-are-we";
@@ -56,11 +55,9 @@ import TradeFairPage from "./pages/Footer-About/trade-fair";
 import BlogPage from "./pages/Footer-About/blog";
 
 function App() {
-  const { user, isAuthenticated, isLoading } = useSelector(
-    (state) => state.auth
-  );
+  const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const location = useLocation(); // Get the current route
+  const location = useLocation(); 
 
   useEffect(() => {
     dispatch(checkAuth());
@@ -77,13 +74,16 @@ function App() {
   // Determine if the current route is in the admin panel
   const isAdminRoute = location.pathname.startsWith("/admin");
 
-  // Determine if the current route is for login/registration
+  // Determine if the current route should hide the header/footer
   const isAuthRoute =
-    location.pathname === "/auth/login" || location.pathname === "/auth/register";
+    location.pathname === "/auth/login" ||
+    location.pathname === "/auth/register" ||
+    location.pathname === "/forget-password" ||
+    location.pathname.startsWith("/reset-password");
 
   return (
     <div className="flex flex-col min-h-screen overflow-hidden bg-white">
-      {/* Render Header only if not in admin panel or auth routes */}
+      {/* Render Header only if not in admin panel or auth-related routes */}
       {!isAdminRoute && !isAuthRoute && <Header />}
 
       <Routes>
@@ -146,7 +146,6 @@ function App() {
         <Route path="/howtoorder" element={<HowToOrder />} />
         <Route path="/wholesale" element={<WholeSale />} />
         <Route path="/sitemap" element={<SiteMap />} />
-        <Route path="/onSale" element={<ProductsOnSale />} />
 
         {/* Footer About Routes */}
         <Route path="/WhoAreWe" element={<WhoAreWe />} />
@@ -162,7 +161,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
 
-      {/* Render Footer only if not in admin panel or auth routes */}
+      {/* Render Footer only if not in admin panel or auth-related routes */}
       {!isAdminRoute && !isAuthRoute && <Footer />}
 
       {/* React-Toastify Toast Container */}

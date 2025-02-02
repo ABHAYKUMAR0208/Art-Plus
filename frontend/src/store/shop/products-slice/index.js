@@ -43,14 +43,8 @@ export const fetchProductDetails = createAsyncThunk(
 export const fetchSaleProducts = createAsyncThunk(
   "/products/fetchSaleProducts",
   async () => {
-    try {
-      const result = await axios.get(`http://localhost:5000/api/shop/sale/get`);
-      console.log("Fetched sale products:", result.data); // Log the fetched data
-      return result.data;
-    } catch (error) {
-      console.error("Error fetching sale products:", error); // Log any errors
-      throw error; // Rethrow the error to be caught in the slice
-    }
+    const result = await axios.get("http://localhost:5000/api/shop/products/sale/get");
+    return result?.data;
   }
 );
 
@@ -76,8 +70,9 @@ const shoppingProductSlice = createSlice({
       .addCase(fetchAllFilteredProducts.rejected, (state, action) => {
         state.isLoading = false;
         state.productList = [];
-        state.error = action.error.message; // Capture the error message
+        state.error = action.error.message; 
       })
+
       .addCase(fetchProductDetails.pending, (state) => {
         state.isLoading = true;
       })
@@ -89,24 +84,20 @@ const shoppingProductSlice = createSlice({
         state.isLoading = false;
         state.productDetails = null;
       })
-      .addCase(fetchSaleProducts.pending, (state) => {
-        state.isLoading = true; // Optional: Set loading state for sale products
-        state.error = null; // Reset error on new request
+
+       .addCase(fetchSaleProducts.pending, (state) => {
+        state.isLoading = true;
       })
       .addCase(fetchSaleProducts.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.saleProducts = action.payload; // Store sale products in state
+        state.saleProducts = action.payload.data; 
       })
-      .addCase(fetchSaleProducts.rejected, (state, action) => {
+      .addCase(fetchSaleProducts.rejected, (state) => {
         state.isLoading = false;
-        state.saleProducts = []; // Reset sale products on error
-        state.error = action.error.message; // Capture the error message
+        state.saleProducts = [];
       });
   },
 });
 
-// Export the action to set product details
 export const { setProductDetails } = shoppingProductSlice.actions;
-
-// Export the reducer
 export default shoppingProductSlice.reducer;

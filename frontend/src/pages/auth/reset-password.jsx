@@ -44,59 +44,74 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-[400px] p-6 bg-white rounded-xl flex flex-col items-center shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">Reset Password</h2>
+    <div className="w-full h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-purple-50">
+      <div className="w-[400px] p-8 bg-white rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-105">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Reset Password</h2>
 
-        {error && <div className="w-full p-2 mb-4 bg-red-600 text-white text-center rounded-lg">{error}</div>}
-        {message && <div className="w-full p-2 mb-4 bg-green-500 text-white text-center rounded-lg">{message}</div>}
+        {error && (
+          <div className="w-full p-3 mb-4 bg-red-100 border border-red-400 text-red-700 text-center rounded-lg animate-fade-in">
+            {error}
+          </div>
+        )}
+        {message && (
+          <div className="w-full p-3 mb-4 bg-green-100 border border-green-400 text-green-700 text-center rounded-lg animate-fade-in">
+            {message}
+          </div>
+        )}
 
         {isValid ? (
           <form onSubmit={handlePasswordReset} className="w-full">
             {/* New Password */}
-            <div className="mb-4 relative">
-              <label className="block text-sm font-medium mb-2">New Password</label>
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full p-2 pr-10 rounded-lg bg-[#edf5f3] text-sm"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-3 mt-8 flex items-center text-gray-600"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={22} /> : <Eye size={20} />}
-              </button>
+            <div className="mb-6 relative">
+              <label className="block text-sm font-medium mb-2 text-gray-700">New Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full p-3 pr-10 rounded-lg bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             {/* Confirm New Password */}
-            <div className="mb-4 relative">
-              <label className="block text-sm font-medium mb-2">Confirm New Password</label>
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="w-full p-2 pr-10 rounded-lg bg-[#edf5f3] text-sm"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-3 mt-8 flex items-center text-gray-600"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? <EyeOff size={22} /> : <Eye size={20} />}
-              </button>
+            <div className="mb-6 relative">
+              <label className="block text-sm font-medium mb-2 text-gray-700">Confirm New Password</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="w-full p-3 pr-10 rounded-lg bg-gray-50 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
-            <button type="submit" className="w-full py-2 bg-[#3bb19b] text-white rounded-full font-semibold text-sm mt-4">
+            <button
+              type="submit"
+              className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold text-sm hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105"
+            >
               Reset Password
             </button>
           </form>
         ) : (
-          <p className="text-red-600">The reset link is invalid or expired.</p>
+          <p className="text-red-600 text-center">The reset link is invalid or expired.</p>
         )}
       </div>
     </div>

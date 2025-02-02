@@ -54,7 +54,7 @@ function MenuItems() {
       {shoppingViewHeaderMenuItems.map((menuItem) => (
         <Label
           onClick={() => handleNavigate(menuItem)}
-          className="text-sm font-medium cursor-pointer"
+          className="text-sm font-medium cursor-pointer p-2 rounded-md hover:bg-indigo-950 hover:text-white transition-colors"
           key={menuItem.id}
         >
           {menuItem.label}
@@ -89,7 +89,7 @@ function HeaderRightContent() {
           onClick={() => setOpenCartSheet(true)}
           variant="outline"
           size="icon"
-          className="relative"
+          className="relative p-2 rounded-md hover:bg-indigo-950 hover:text-white transition-colors"
         >
           <ShoppingCart className="w-6 h-6" />
           <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
@@ -111,7 +111,7 @@ function HeaderRightContent() {
       {isAuthenticated ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Avatar className="bg-black">
+            <Avatar className="bg-black p-2 rounded-md hover:bg-indigo-950 hover:text-white transition-colors">
               <AvatarFallback className="bg-black text-white font-bold">
                 {user?.userName[0].toUpperCase()}
               </AvatarFallback>
@@ -136,6 +136,7 @@ function HeaderRightContent() {
           onClick={() => navigate("/auth/login")}
           variant="outline"
           size="icon"
+          className="p-2 rounded-md hover:bg-indigo-950 hover:text-white transition-colors"
         >
           <UserRound className="w-6 h-6" />
         </Button>

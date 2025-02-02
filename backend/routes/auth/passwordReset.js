@@ -34,7 +34,7 @@ router.post("/forget", async (req, res) => {
 
     // ✅ FIXED: Correct frontend URL
     const url = `http://localhost:5173/reset-password/${user._id}/${token.token}`;
-    await sendEmail(user.email, "Password Reset", `Click here to reset your password: ${url}`);
+    await sendEmail(user.email, "Password Reset", `Click here to reset your password. This Password is only valid for 1 hour: ${url}`);
 
     res.status(200).send({ message: "Password reset link sent to your email account" });
   } catch (error) {

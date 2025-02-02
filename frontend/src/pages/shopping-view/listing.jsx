@@ -170,20 +170,7 @@ function ShoppingListing() {
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-          {/* Display sale products */}
-          {saleProducts && saleProducts.length > 0 && (
-            <div>
-              <h2 className="text-lg font-extrabold">Products on Sale</h2>
-              {saleProducts.map((productItem) => (
-                <ShoppingProductTile
-                  handleGetProductDetails={handleGetProductDetails}
-                  product={productItem}
-                  handleAddtoCart={handleAddtoCart}
-                  key={productItem.id}
-                />
-              ))}
-            </div>
-          )}
+        
           {/* Display all products */}
           {productList && productList.length > 0
             ? productList.map((productItem) => (

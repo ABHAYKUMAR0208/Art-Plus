@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 
 const initialState = {
   isAuthenticated: false,
@@ -8,7 +8,6 @@ const initialState = {
   user: null,
 };
 
-// Thunk for user registration
 export const registerUser = createAsyncThunk(
   "/auth/register",
   async (formData, { rejectWithValue }) => {
@@ -16,19 +15,15 @@ export const registerUser = createAsyncThunk(
       const response = await axios.post(
         "http://localhost:5000/api/auth/register",
         formData,
-
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
-      return response.data; // Return the API response data
+      return response.data;
     } catch (error) {
-      // Return a custom error message
       return rejectWithValue(error.response?.data || "Registration failed");
     }
   }
 );
-// login
+
 export const loginUser = createAsyncThunk(
   "/auth/login",
   async (formData, { rejectWithValue }) => {
@@ -36,60 +31,41 @@ export const loginUser = createAsyncThunk(
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
         formData,
-
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
-      return response.data; // Return the API response data
+      return response.data;
     } catch (error) {
-      // Return a custom error message
       return rejectWithValue(error.response?.data || "Login failed");
     }
   }
 );
 
-//new
 export const logoutUser = createAsyncThunk(
   "/auth/logout",
-  async ()=>  {
-    
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/logout",{},
-
-        {
-          withCredentials: true,
-        }
-      );
-      return response.data; 
+  async () => {
+    const response = await axios.post(
+      "http://localhost:5000/api/auth/logout", {},
+      { withCredentials: true }
+    );
+    return response.data;
   }
 );
 
-//checkUth
 export const checkAuth = createAsyncThunk(
   "/auth/checkauth",
-  async (formData, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         "http://localhost:5000/api/auth/check-auth",
-        {
-          withCredentials: true,
-          headers : {
-            'Cache-Control' : 'no-store, no-cache, must-revalidate, proxy-revalidate',
-        
-          }
-        }
+        { withCredentials: true }
       );
-      return response.data; // Return the API response data
+      return response.data;
     } catch (error) {
-      // Return a custom error message
-      return rejectWithValue(error.response?.data || "Registration failed");
+      return rejectWithValue(error.response?.data || "Auth check failed");
     }
   }
 );
 
-
-// authSlice
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -108,7 +84,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = true;
-        toast.success("Login now")
+        toast.success("Login now");
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -122,8 +98,6 @@ const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        console.log(action);
-
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
@@ -134,13 +108,11 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         console.error("Login failed:", action.payload);
       })
-      
+
       .addCase(checkAuth.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
-        console.log(action);
-
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
@@ -149,12 +121,12 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
-        console.error("Login failed:", action.payload);
+        console.error("Auth check failed:", action.payload);
       })
-      
-      .addCase(logoutUser.fulfilled, (state, action) => {
+
+      .addCase(logoutUser.fulfilled, (state) => {
         state.isLoading = false;
-        state.user =  null;
+        state.user = null;
         state.isAuthenticated = false;
       });
   },

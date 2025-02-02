@@ -10,9 +10,9 @@ const ProductSchema = new mongoose.Schema(
     price: Number,
     salePrice: Number,
     totalStock: Number,
+    isOnSale: { type: Boolean, default: false }, // Add this field
   },
   { timestamps: true }
 );
 
 module.exports = mongoose.model("Product", ProductSchema);
-

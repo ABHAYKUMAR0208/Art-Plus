@@ -12,8 +12,6 @@ const createOrder = async (req, res) => {
       paymentMethod = "COD",
       paymentStatus = "pending",
       totalAmount,
-      orderDate,
-      orderUpdateDate,
       cartId,
     } = req.body;
 
@@ -26,8 +24,8 @@ const createOrder = async (req, res) => {
       paymentMethod,
       paymentStatus,
       totalAmount,
-      orderDate,
-      orderUpdateDate,
+      orderDate: Date.now(), // Ensure orderDate is set properly
+      orderUpdateDate: Date.now(), // Set initial update date
     });
 
     await newlyCreatedOrder.save();
@@ -38,10 +36,11 @@ const createOrder = async (req, res) => {
       orderId: newlyCreatedOrder._id,
     });
   } catch (e) {
-    console.log(e);
+    console.error("Error in createOrder:", e);
     res.status(500).json({
       success: false,
       message: "Some error occurred!",
+      error: e.message,
     });
   }
 };
@@ -51,75 +50,67 @@ const capturePayment = async (req, res) => {
     const { orderId } = req.body;
 
     let order = await Order.findById(orderId);
-
     if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order cannot be found",
-      });
+      return res.status(404).json({ success: false, message: "Order not found!" });
     }
 
+    // Fetch all product IDs in a single query
+    const productIds = order.cartItems.map(item => item.productId);
+    const products = await Product.find({ _id: { $in: productIds } });
+
+    // Check stock availability
+    const insufficientStock = order.cartItems.some(item => {
+      const product = products.find(p => p._id.toString() === item.productId.toString());
+      return !product || product.totalStock < item.quantity;
+    });
+
+    if (insufficientStock) {
+      return res.status(400).json({ success: false, message: "Not enough stock!" });
+    }
+
+    // Deduct stock using `bulkWrite`
+    const bulkOps = order.cartItems.map(item => ({
+      updateOne: {
+        filter: { _id: item.productId },
+        update: { $inc: { totalStock: -item.quantity } },
+      },
+    }));
+    await Product.bulkWrite(bulkOps);
+
+    // Update order & delete cart
     order.paymentStatus = "paid";
     order.orderStatus = "confirmed";
-
-    for (let item of order.cartItems) {
-      let product = await Product.findById(item.productId);
-
-      if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: `Not enough stock for product: ${item.title}`,
-        });
-      }
-
-      product.totalStock -= item.quantity;
-      await product.save();
-    }
-
-    const getCartId = order.cartId;
-    await Cart.findByIdAndDelete(getCartId);
-
+    await Cart.findByIdAndDelete(order.cartId);
     await order.save();
 
-    res.status(200).json({
-      success: true,
-      message: "Order confirmed",
-      data: order,
-    });
+    res.status(200).json({ success: true, message: "Order confirmed", data: order });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({
-      success: false,
-      message: "Some error occurred!",
-    });
+    console.error("Error in capturePayment:", e);
+    res.status(500).json({ success: false, message: "Some error occurred!", error: e.message });
   }
 };
+
+
 
 const getAllOrdersByUser = async (req, res) => {
   try {
     const { userId } = req.params;
-
-    const orders = await Order.find({ userId });
-
-    if (!orders.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No orders found!",
-      });
-    }
+    const orders = await Order.find({ userId }).sort({ orderDate: -1 });
 
     res.status(200).json({
       success: true,
       data: orders,
     });
   } catch (e) {
-    console.log(e);
+    console.error("Error in getAllOrdersByUser:", e);
     res.status(500).json({
       success: false,
       message: "Some error occurred!",
+      error: e.message,
     });
   }
 };
+
 
 const getOrderDetails = async (req, res) => {
   try {
@@ -147,9 +138,44 @@ const getOrderDetails = async (req, res) => {
   }
 };
 
+const cancelOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let order = await Order.findById(id);
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found!" });
+    }
+
+    if (order.orderStatus !== "pending" || order.paymentStatus === "paid") {
+      return res.status(400).json({ success: false, message: "Only unpaid and pending orders can be canceled!" });
+    }
+
+    // Restore stock using `bulkWrite`
+    const bulkOps = order.cartItems.map(item => ({
+      updateOne: {
+        filter: { _id: item.productId },
+        update: { $inc: { totalStock: item.quantity } },
+      },
+    }));
+    await Product.bulkWrite(bulkOps);
+
+    // Update order status
+    order.orderStatus = "canceled";
+    await order.save();
+
+    res.status(200).json({ success: true, message: "Order canceled successfully!", data: order });
+  } catch (e) {
+    console.error("Error in cancelOrder:", e);
+    res.status(500).json({ success: false, message: "Some error occurred!", error: e.message });
+  }
+};
+
+
 module.exports = {
   createOrder,
   capturePayment,
   getAllOrdersByUser,
   getOrderDetails,
+  cancelOrder,
 };
