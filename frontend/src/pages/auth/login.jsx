@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Eye, EyeOff } from "lucide-react";
-import { loginUser, clearError } from "@/store/auth-slice";
+import { loginUser, clearError } from "@/store/auth-slice"; 
 
 const initialState = {
   email: "",
@@ -32,11 +32,10 @@ function AuthLogin() {
   const [formData, setFormData] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
-  const { error } = useSelector((state) => state.auth);
+  const { error } = useSelector((state) => state.auth); 
 
   const onSubmit = async (event) => {
     event.preventDefault();
-
     if (!validateEmail(formData.email)) {
       toast.error("Invalid email format!");
       return;
@@ -65,7 +64,7 @@ function AuthLogin() {
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-purple-50">
       <div className="w-[400px] p-8 bg-white rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-105 mt-[-100px]">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign In to Your Account</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign in to your account</h2>
         <form onSubmit={onSubmit} className="w-full">
           <div className="mb-6">
             <label className="block text-sm font-medium mb-2 text-gray-700">Email</label>
@@ -79,7 +78,6 @@ function AuthLogin() {
               placeholder="Enter your email"
             />
           </div>
-
           <div className="mb-6 relative">
             <label className="block text-sm font-medium mb-2 text-gray-700">Password</label>
             <div className="relative">
@@ -101,7 +99,6 @@ function AuthLogin() {
               </button>
             </div>
           </div>
-
           <button
             type="submit"
             className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold text-sm hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105"
@@ -109,11 +106,15 @@ function AuthLogin() {
             Sign In
           </button>
         </form>
-
         <p className="mt-4 text-center text-gray-600">
-          Don't have an account?{' '}
+          Don't have an account?{" "}
           <Link to="/auth/register" className="text-blue-500 hover:underline">
-            Sign up
+            Sign Up
+          </Link>
+        </p>
+        <p className="mt-2 text-center text-gray-600">
+          <Link to="/forget-password" className="text-blue-500 hover:underline">
+            Forgot Password?
           </Link>
         </p>
       </div>
