@@ -84,7 +84,7 @@ app.use(
 );
 app.use(
   cors({
-    origin: *,
+    origin: process.env.CLIENT_BASE_URL,
     methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
