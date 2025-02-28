@@ -36,12 +36,55 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(helmet()); // Security Headers
+app.use(
+  cors({
+    origin: *,
+    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cache-Control",
+      "Expires",
+      "Pragma",
+    ],
+    credentials: true,
+  })
+);
 app.use(compression()); // Gzip Compression
 app.use(cookieParser());
 app.use(express.json());
+
 app.use(
   cors({
-    origin: process.env.CLIENT_BASE_URL,
+    origin: *,
+    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cache-Control",
+      "Expires",
+      "Pragma",
+    ],
+    credentials: true,
+  })
+);
+app.use(
+  cors({
+    origin: *,
+    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cache-Control",
+      "Expires",
+      "Pragma",
+    ],
+    credentials: true,
+  })
+);
+app.use(
+  cors({
+    origin: *,
     methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
