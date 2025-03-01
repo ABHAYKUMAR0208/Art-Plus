@@ -38,7 +38,7 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet()); // Security Headers
 app.use(
   cors({
-    origin: *,
+    origin: process.env.CLIENT_URL,
     methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
