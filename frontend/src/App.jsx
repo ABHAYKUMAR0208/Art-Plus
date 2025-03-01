@@ -36,6 +36,7 @@ import Header from "./components/header";
 import CheckAuth from "./components/common/check-auth";
 import UnauthPage from "./pages/unauth-page";
 import NotFound from "./pages/not-found";
+import LoadingScreen from "./components/common/LoadingScreen";
 
 //Footer Usefull links
 import HowToOrder from "./pages/footerdata-Usefulldata/howtoorder";
@@ -71,11 +72,7 @@ function App() {
   }, [dispatch]);
 
   if (isLoading) {
-    return (
-      <Skeleton className="w-full h-[600px] bg-gray-100 flex justify-center items-center">
-        <p className="text-lg font-medium text-gray-500">Loading...</p>
-      </Skeleton>
-    );
+    return <LoadingScreen />;
   }
 
   // Determine if the current route is in the admin panel
